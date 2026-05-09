@@ -1,20 +1,17 @@
-package tests.navigation.automated_ai;
+package tests.shopping.automated_ai;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AIAutomatedShoppingCart_TC15 {
+public class AIAutomatedShoppingCart_TC14 {
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -48,12 +45,24 @@ public class AIAutomatedShoppingCart_TC15 {
     }
 
     @Test
-    public void removeItemFromCart() {
+    public void addMultipleQuantities_sameProduct() throws Exception {
 
         wait.until(
                 ExpectedConditions.frameToBeAvailableAndSwitchToIt(0)
         );
 
+        for (int i = 0; i < 5; i++) {
+
+            WebElement plusButton = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.id("increment_button_1")
+                    )
+            );
+
+            jsClick(plusButton);
+
+            Thread.sleep(700);
+        }
 
         WebElement addToCartButton = wait.until(
                 ExpectedConditions.elementToBeClickable(
@@ -64,7 +73,6 @@ public class AIAutomatedShoppingCart_TC15 {
         );
 
         jsClick(addToCartButton);
-
 
         WebElement modal = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
@@ -77,69 +85,24 @@ public class AIAutomatedShoppingCart_TC15 {
                 "Cart modal should appear"
         );
 
+        Thread.sleep(3000);
 
-        WebElement proceedToCheckout = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.cssSelector(
-                                "#blockcart-modal a[href*='cart?action=show']"
-                        )
-                )
-        );
-
-        jsClick(proceedToCheckout);
-
-
-        WebElement quantityInput = wait.until(
+        WebElement cartBadge = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector(
-                                "input.js-cart-line-product-quantity"
-                        )
-                )
-        );
-
-        assertEquals(
-                "1",
-                quantityInput.getAttribute("value"),
-                "Cart should initially contain 1 product"
-        );
-
-
-        WebElement minusButton = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.id("decrement_button_1")
-                )
-        );
-
-        jsClick(minusButton);
-
-
-        wait.until(driver -> {
-
-            try {
-
-                WebElement badge = driver.findElement(
                         By.cssSelector(".header-block__badge")
-                );
-
-                return badge.getText().trim().equals("0");
-
-            } catch (Exception e) {
-
-                return true;
-            }
-        });
-
-        WebElement cartBadge = driver.findElement(
-                By.cssSelector(".header-block__badge")
+                )
         );
 
+        String cartCount = cartBadge.getText().trim();
+
+        System.out.println("Cart count: " + cartCount);
+
         assertEquals(
-                "0",
-                cartBadge.getText().trim(),
-                "Cart should be empty after removing item"
+                "5",
+                cartCount,
+                "Cart should contain 5 items"
         );
     }
-
 
     private void jsClick(WebElement element) {
 

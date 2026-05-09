@@ -1,4 +1,4 @@
-package tests.navigation.automated_ai;
+package tests.shopping.automated_ai;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;

@@ -1,4 +1,4 @@
-package tests.product_details.manual;
+package tests.checkout.manual;
 
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;

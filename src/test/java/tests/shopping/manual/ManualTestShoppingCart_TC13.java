@@ -1,4 +1,4 @@
-package tests.navigation.manual;
+package tests.shopping.manual;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;

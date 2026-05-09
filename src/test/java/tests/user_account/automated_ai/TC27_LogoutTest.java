@@ -1,4 +1,4 @@
-package tests.user_account;
+package tests.user_account.automated_ai;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LogoutTest extends BaseTest {
+public class TC27_LogoutTest extends BaseTest {
 
     private static final String EMAIL = "pub@prestashop.com";
     private static final String PASSWORD = "123456789";

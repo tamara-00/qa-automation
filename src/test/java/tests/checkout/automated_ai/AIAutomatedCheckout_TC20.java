@@ -1,4 +1,4 @@
-package tests.product_details.automated_ai;
+package tests.checkout.automated_ai;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
@@ -11,7 +11,7 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AIAutomatedCheckout_TC21 {
+public class AIAutomatedCheckout_TC20 {
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -46,11 +46,75 @@ public class AIAutomatedCheckout_TC21 {
     }
 
     @Test
-    public void checkoutWithInvalidAddress_missingRequiredFields()
-            throws Exception {
+    public void checkoutWithExistingCustomerAccount() throws Exception {
 
         wait.until(
                 ExpectedConditions.frameToBeAvailableAndSwitchToIt(0)
+        );
+
+        robustClick(
+                By.xpath("//span[contains(text(),'Sign in')]")
+        );
+
+        robustClick(
+                By.cssSelector(
+                        "a[data-link-action='display-register-form']"
+                )
+        );
+
+        wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.name("firstname")
+                )
+        );
+
+        driver.findElement(By.name("firstname"))
+                .sendKeys("John");
+
+        driver.findElement(By.name("lastname"))
+                .sendKeys("Doe");
+
+        WebElement emailField = driver.findElement(
+                By.id("field-email")
+        );
+
+        ((JavascriptExecutor) driver)
+                .executeScript(
+                        "arguments[0].value='john"
+                                + System.currentTimeMillis()
+                                + "@test.com';",
+                        emailField
+                );
+
+        WebElement passwordField = driver.findElement(
+                By.id("field-password")
+        );
+
+        ((JavascriptExecutor) driver)
+                .executeScript(
+                        "arguments[0].value='StrongPass123!';",
+                        passwordField
+                );
+
+        driver.findElement(By.name("birthday"))
+                .sendKeys("01/01/1999");
+
+        robustClick(
+                By.name("psgdpr")
+        );
+
+        robustClick(
+                By.name("customer_privacy")
+        );
+
+        robustClick(
+                By.cssSelector("button[type='submit']")
+        );
+
+        Thread.sleep(3000);
+
+        robustClick(
+                By.cssSelector(".logo")
         );
 
         robustClick(
@@ -79,62 +143,38 @@ public class AIAutomatedCheckout_TC21 {
 
         wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
-                        By.name("firstname")
+                        By.name("address1")
                 )
         );
 
-        driver.findElement(By.name("email"))
-                .sendKeys(
-                        "john"
-                                + System.currentTimeMillis()
-                                + "@test.com"
-                );
+        driver.findElement(By.name("address1"))
+                .sendKeys("123 Main St");
 
-        robustClick(
-                By.name("password-form__check")
+        driver.findElement(By.name("city"))
+                .sendKeys("Paris");
+
+        driver.findElement(By.name("postcode"))
+                .sendKeys("75001");
+
+        Select country = new Select(
+                driver.findElement(By.name("id_country"))
         );
 
-        WebElement passwordField = wait.until(
+        country.selectByVisibleText("France");
+
+        robustClick(
+                By.name("confirm-addresses")
+        );
+
+        WebElement shippingStep = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
-                        By.name("password")
+                        By.id("delivery")
                 )
         );
 
-        passwordField.sendKeys("StrongPass123!");
-
-        driver.findElement(By.name("birthday"))
-                .sendKeys("01/01/1999");
-
-        robustClick(
-                By.name("psgdpr")
-        );
-
-        robustClick(
-                By.name("customer_privacy")
-        );
-
-        robustClick(
-                By.cssSelector("button[type='submit']")
-        );
-
-        Thread.sleep(2000);
-
-        boolean validationExists =
-                driver.getPageSource()
-                        .contains("required");
-
         assertTrue(
-                validationExists,
-                "Validation message should appear for required fields"
-        );
-
-        boolean stillOnPersonalInfo =
-                driver.getPageSource()
-                        .contains("Personal Information");
-
-        assertTrue(
-                stillOnPersonalInfo,
-                "Form should not submit with missing required fields"
+                shippingStep.isDisplayed(),
+                "Checkout should proceed successfully to shipping step"
         );
     }
 
