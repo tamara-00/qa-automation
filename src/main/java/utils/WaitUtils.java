@@ -5,6 +5,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.function.Function;
 
 public class WaitUtils {
 
@@ -36,5 +37,37 @@ public class WaitUtils {
 
     public static void scrollIntoView(WebDriver driver, WebElement element) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+    }
+
+    public static void robustClick(
+            WebDriver driver,
+            WebElement element
+    ) {
+
+        try {
+
+            element.click();
+
+        } catch (Exception e) {
+
+            ((JavascriptExecutor) driver)
+                    .executeScript(
+                            "arguments[0].click();",
+                            element
+                    );
+        }
+    }
+    public static void waitForCondition(
+            WebDriver driver,
+            Function<WebDriver, Boolean> condition
+    ) {
+
+        WebDriverWait wait =
+                new WebDriverWait(
+                        driver,
+                        Duration.ofSeconds(20)
+                );
+
+        wait.until(condition);
     }
 }
