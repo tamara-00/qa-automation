@@ -4,7 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.FrameUtils;
 import utils.WaitUtils;
@@ -701,5 +703,98 @@ public class HomePage {
             );
         }
     }
+
+    public void switchLanguage(String language) {
+
+        WebElement languageDropdownElement =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector("select.js-language-selector")
+                );
+
+        Select languageDropdown =
+                new Select(languageDropdownElement);
+
+        languageDropdown.selectByVisibleText(language);
+    }
+    public void clickClothesCategory() {
+
+        WebElement clothesCategory =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.xpath("//a[contains(@class,'ps-mainmenu__tree-link') and normalize-space()='Clothes']")
+                );
+
+        clothesCategory.click();
+    }
+
+    public void clickLogo() {
+
+        WebElement logo =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.cssSelector("a.navbar-brand")
+                );
+
+        WaitUtils.jsClick(driver, logo);
+    }
+    public String getPageText() {
+
+        return WaitUtils.waitForVisible(
+                driver,
+                By.tagName("body")
+        ).getText();
+    }
+    public void clickFooterLink(String footerLinkSelector) {
+
+        WebElement footerLink =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.cssSelector(footerLinkSelector)
+                );
+
+        WaitUtils.scrollIntoView(driver, footerLink);
+
+        WaitUtils.jsClick(driver, footerLink);
+    }
+
+    public String getCurrentFrameUrl() {
+
+        return (String) ((JavascriptExecutor) driver)
+                .executeScript("return window.location.href;");
+    }
+
+    public void hoverCategory(String categoryName) {
+
+        WebElement category =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.xpath("//a[contains(@class,'ps-mainmenu__tree-link') and normalize-space()='" + categoryName + "']")
+                );
+
+        new Actions(driver)
+                .moveToElement(category)
+                .perform();
+    }
+
+
+    public boolean isSubcategoryVisible(String subcategoryName) {
+
+        return !driver.findElements(
+                By.xpath("//a[contains(normalize-space(),'" + subcategoryName + "')]")
+        ).isEmpty();
+    }
+
+    public void clickCategory(String categoryName) {
+
+        WebElement category =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.xpath("//a[contains(@class,'ps-mainmenu__tree-link') and normalize-space()='" + categoryName + "']")
+                );
+
+        category.click();
+    }
+
 
 }

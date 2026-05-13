@@ -127,4 +127,13 @@ public class WaitUtils {
 
         wait.until(condition);
     }
+
+    public static void waitForText(
+            WebDriver driver,
+            By locator,
+            String text
+    ) {
+        new WebDriverWait(driver, Duration.ofSeconds(TIMEOUT))
+                .until(ExpectedConditions.textToBePresentInElementLocated(locator, text));
+    }
 }
