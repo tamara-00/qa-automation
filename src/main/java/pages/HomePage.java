@@ -1035,6 +1035,183 @@ public class HomePage {
                 .toList();
     }
 
+    public void openColorFilter() {
+
+        WebElement colorFilterSection =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.cssSelector("section[data-name='Color']")
+                );
+
+        WaitUtils.scrollIntoView(
+                driver,
+                colorFilterSection
+        );
+
+        WebElement colorFilterButton =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector("section[data-name='Color'] button.accordion-button")
+                );
+
+        if (colorFilterButton
+                .getAttribute("class")
+                .contains("collapsed")) {
+
+            WaitUtils.jsClick(
+                    driver,
+                    colorFilterButton
+            );
+        }
+    }
+
+    public void applyColorFilter(String colorName) {
+
+        WebElement colorLabel =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.xpath(
+                                "//input[contains(@data-search-url,'Color-"
+                                        + colorName
+                                        + "')]/following-sibling::label"
+                        )
+                );
+
+        WaitUtils.scrollIntoView(
+                driver,
+                colorLabel
+        );
+
+        WaitUtils.jsClick(
+                driver,
+                colorLabel
+        );
+
+        WaitUtils.waitForVisible(
+                driver,
+                By.cssSelector(".search-filters__item.facet-label.active")
+        );
+    }
+
+    public boolean isColorFilterActive() {
+
+        try {
+
+            return WaitUtils.waitForVisible(
+                    driver,
+                    By.cssSelector(".search-filters__item.facet-label.active .color.active")
+            ).isDisplayed();
+
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+
+    public boolean isProductImageDisplayed() {
+
+        try {
+
+            return WaitUtils.waitForVisible(
+                    driver,
+                    By.cssSelector(".product-miniature__image")
+            ).isDisplayed();
+
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+
+    public String getFirstProductImageSrc() {
+
+        return WaitUtils.waitForVisible(
+                driver,
+                By.cssSelector(".product-miniature__image")
+        ).getAttribute("src");
+    }
+
+
+    public void clickArtCategory() {
+
+        WebElement artCategory =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.xpath("//a[contains(@class,'ps-mainmenu__tree-link') and normalize-space()='Art']")
+                );
+
+        WaitUtils.jsClick(
+                driver,
+                artCategory
+        );
+    }
+
+    public void openDimensionFilter() {
+
+        WebElement dimensionFilterSection =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.cssSelector("section[data-name='Dimension']")
+                );
+
+        WaitUtils.scrollIntoView(
+                driver,
+                dimensionFilterSection
+        );
+
+        WebElement dimensionButton =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector("section[data-name='Dimension'] button.accordion-button")
+                );
+
+        if (dimensionButton
+                .getAttribute("class")
+                .contains("collapsed")) {
+
+            WaitUtils.jsClick(
+                    driver,
+                    dimensionButton
+            );
+        }
+    }
+
+    public void selectDimensionFilter() {
+
+        WebElement dimensionLabel =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.xpath(
+                                "//section[@data-name='Dimension']//label[contains(.,'40×60cm') or contains(.,'40x60cm')]"
+                        )
+                );
+
+        WaitUtils.scrollIntoView(
+                driver,
+                dimensionLabel
+        );
+
+        WaitUtils.jsClick(
+                driver,
+                dimensionLabel
+        );
+
+        WaitUtils.waitForVisible(
+                driver,
+                By.cssSelector(".search-filters__item.facet-label.active")
+        );
+    }
+
+    public List<WebElement> getDisplayedProducts() {
+
+        return driver.findElements(
+                        By.cssSelector("article.product-miniature")
+                )
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .toList();
+    }
+
 
 
 
