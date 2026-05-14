@@ -1,9 +1,6 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -12,6 +9,7 @@ import utils.FrameUtils;
 import utils.WaitUtils;
 
 import java.time.Duration;
+import java.util.List;
 
 public class HomePage {
 
@@ -114,6 +112,12 @@ public class HomePage {
             By.cssSelector(
                     ".header-block__action-btn"
             );
+
+    private By searchInput =
+            By.cssSelector("input[placeholder='Search products...']");
+
+    private By searchResultsTitle =
+            By.cssSelector("h1.page-title-section");
 
     // ================= CHECKOUT METHODS =================
     public void clickSimpleAddToCart() {
@@ -795,6 +799,244 @@ public class HomePage {
 
         category.click();
     }
+    public void searchForProduct(String keyword) {
+
+        WebElement searchBar =
+                WaitUtils.waitForClickable(
+                        driver,
+                        searchInput
+                );
+
+        searchBar.click();
+
+        searchBar.clear();
+
+        searchBar.sendKeys(keyword);
+
+        searchBar.sendKeys(Keys.ENTER);
+    }
+
+    public String getSearchResultsTitle() {
+
+        return WaitUtils.waitForVisible(
+                driver,
+                searchResultsTitle
+        ).getText();
+    }
+    public void openPriceFilter() {
+        WebElement priceFilterSection =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.cssSelector("section[data-type='price']")
+                );
+
+        WaitUtils.scrollIntoView(driver, priceFilterSection);
+
+        WebElement priceFilterButton =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector("section[data-type='price'] button.accordion-button")
+                );
+
+        WaitUtils.robustClick(driver, priceFilterButton);
+    }
+
+    public void moveLowerPriceSlider(int offset) {
+        String previousRange = getSelectedPriceRange();
+
+        WebElement lowerHandle =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector("section[data-type='price'] .noUi-handle-lower")
+                );
+
+        WaitUtils.scrollIntoView(driver, lowerHandle);
+
+        new Actions(driver)
+                .moveToElement(lowerHandle)
+                .clickAndHold()
+                .moveByOffset(offset, 0)
+                .release()
+                .perform();
+
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(driver ->
+                        !getSelectedPriceRange().equals(previousRange)
+                );
+    }
+
+    public String getSelectedPriceRange() {
+        return WaitUtils.waitForVisible(
+                driver,
+                By.cssSelector("section[data-type='price'] .search-filters__slider-values")
+        ).getText();
+    }
+
+    public List<WebElement> getProductPrices() {
+
+        return driver.findElements(
+                        By.cssSelector(".product-miniature__price")
+                )
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .toList();
+    }
+
+    public void waitUntilAllProductPricesAreWithinRange(String selectedRange) {
+
+        double minPrice =
+                extractSinglePrice(selectedRange.split("-")[0]);
+
+        double maxPrice =
+                extractSinglePrice(selectedRange.split("-")[1]);
+
+        new WebDriverWait(driver, Duration.ofSeconds(15))
+                .until(driver -> {
+
+                    List<WebElement> prices =
+                            getProductPrices();
+
+                    if (prices.isEmpty()) {
+                        return false;
+                    }
+
+                    for (WebElement price : prices) {
+
+                        if (!price.isDisplayed()) {
+                            continue;
+                        }
+
+                        String priceText =
+                                price.getText().trim();
+
+                        if (priceText.isBlank()) {
+                            continue;
+                        }
+
+                        double actualPrice =
+                                extractSinglePrice(priceText);
+
+                        if (actualPrice < minPrice
+                                || actualPrice > maxPrice) {
+
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+    }
+
+    private double extractSinglePrice(String priceText) {
+        String cleanedPrice = priceText
+                .replace("€", "")
+                .replace(",", ".")
+                .replaceAll("[^0-9.]", "")
+                .trim();
+
+        return Double.parseDouble(cleanedPrice);
+    }
+
+
+    public void openNewProductsPage() {
+
+        WebElement allNewProductsButton =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector("a[href*='new-products']")
+                );
+
+        WaitUtils.scrollIntoView(
+                driver,
+                allNewProductsButton
+        );
+
+        WaitUtils.jsClick(
+                driver,
+                allNewProductsButton
+        );
+
+        WaitUtils.waitForText(
+                driver,
+                By.tagName("body"),
+                "New products"
+        );
+    }
+
+    public void openCompositionFilter() {
+
+        WebElement compositionSection =
+                WaitUtils.waitForVisible(
+                        driver,
+                        By.cssSelector("section[data-name='Composition']")
+                );
+
+        WaitUtils.scrollIntoView(
+                driver,
+                compositionSection
+        );
+
+        WebElement compositionButton =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector(
+                                "section[data-name='Composition'] button.accordion-button"
+                        )
+                );
+
+        if (compositionButton
+                .getAttribute("class")
+                .contains("collapsed")) {
+
+            WaitUtils.jsClick(
+                    driver,
+                    compositionButton
+            );
+        }
+    }
+
+    public void selectCompositionFilter(String compositionName) {
+
+        WebElement compositionLabel =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.xpath(
+                                "//section[@data-name='Composition']//label[contains(normalize-space(.), '"
+                                        + compositionName
+                                        + "')]"
+                        )
+                );
+
+        WaitUtils.scrollIntoView(
+                driver,
+                compositionLabel
+        );
+
+        WaitUtils.jsClick(
+                driver,
+                compositionLabel
+        );
+
+        WaitUtils.waitForVisible(
+                driver,
+                By.cssSelector(
+                        ".search-filters__item.facet-label.active"
+                )
+        );
+    }
+
+    public List<WebElement> getDisplayedProductTitles() {
+
+        return driver.findElements(
+                        By.cssSelector(".product-miniature__title")
+                )
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .toList();
+    }
+
+
 
 
 }
+
