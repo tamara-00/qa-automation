@@ -1369,6 +1369,58 @@ public class HomePage {
         return names;
     }
 
+    public void searchProduct(String keyword) {
+
+        WebElement searchBar =
+                WaitUtils.waitForClickable(
+                        driver,
+                        By.cssSelector("input.js-search-input")
+                );
+
+        searchBar.click();
+        searchBar.clear();
+        searchBar.sendKeys(keyword);
+        searchBar.sendKeys(Keys.ENTER);
+
+        WaitUtils.waitForText(
+                driver,
+                By.tagName("body"),
+                "Search results"
+        );
+    }
+
+    public List<String> getDisplayedSearchProductTitles() {
+
+        List<WebElement> titleElements =
+                driver.findElements(
+                        By.cssSelector(".product-miniature__title")
+                );
+
+        List<String> titles =
+                new ArrayList<>();
+
+        for (WebElement titleElement : titleElements) {
+
+            try {
+
+                if (!titleElement.isDisplayed()) {
+                    continue;
+                }
+
+                String productName =
+                        titleElement.getText().trim();
+
+                if (!productName.isBlank()) {
+                    titles.add(productName);
+                }
+
+            } catch (Exception ignored) {
+            }
+        }
+
+        return titles;
+    }
+
 
 
 
