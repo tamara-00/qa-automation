@@ -26,8 +26,9 @@ public class AIAutomatedUserAccount_TC25_TC26 extends BaseTest {
 
         login.login(EMAIL, PASSWORD);
 
-        assertTrue(account.isLoggedIn(),
-                "TC.25 FAILED: User was not logged in with valid credentials");
+        home.switchToStoreFrame();
+
+        assertTrue(account.isLoggedIn(), "TC25: User should be logged in but is not.");
     }
 
     // TC.26 - User Login with Invalid Credentials

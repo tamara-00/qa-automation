@@ -2,9 +2,17 @@ package tests.user_account.manual;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.HomePage;
 import pages.LoginPage;
 import pages.AccountPage;
+import utils.WaitUtils;
+import org.openqa.selenium.By;
+
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ManualUserAccount_TC28 extends BaseTest {
@@ -15,36 +23,25 @@ public class ManualUserAccount_TC28 extends BaseTest {
     private static final String NEW_LASTNAME = "Doe";
     private static final String NEW_EMAIL = "jane.doe.test@gmaill.com";
 
+    // TC.28 - Account Profile - Edit Personal Information
     @Test
     public void TC28_editAccountInformation() {
         HomePage home = new HomePage(driver);
         LoginPage login = new LoginPage(driver);
         AccountPage account = new AccountPage(driver);
-        loginUser(home, login, TEST_EMAIL, TEST_PASS);
-        stabilizeFrameContext(home);
-        home.clickUserProfile();
-        account.openInformationSection();
-        account.updatePersonalInfo(NEW_FIRSTNAME, NEW_LASTNAME, NEW_EMAIL, TEST_PASS);
-        String successMsg = account.getSuccessMessage();
-        assertTrue(successMsg.contains("Information successfully updated"),
-                "TC.28 FAILED: Success message not displayed or incorrect");
-    }
 
-    private void loginUser(HomePage home, LoginPage login, String email, String pass) {
         home.switchToStoreFrame();
         home.clickSignIn();
-        login.login(email, pass);
-    }
-
-    private void stabilizeFrameContext(HomePage home) {
+        login.login(TEST_EMAIL, TEST_PASS);
         driver.switchTo().defaultContent();
-        try {
-            Thread.sleep(5000);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        new WebDriverWait(driver, Duration.ofSeconds(15))
+                .until(ExpectedConditions.not(ExpectedConditions.urlContains("login")));
+        WaitUtils.waitForPresence(driver, By.id("framelive"));
         home.switchToStoreFrame();
+
+        account.openInformationSection();
+        account.updatePersonalInfo(NEW_FIRSTNAME, NEW_LASTNAME, NEW_EMAIL, TEST_PASS);
+        assertTrue(account.getSuccessMessage().contains("Information successfully updated"),
+                "TC.28 FAILED: Success message not displayed or incorrect after updating account information");
     }
 }

@@ -17,7 +17,6 @@ public class HomePage {
     private WebDriver driver;
 
     private By signInButton = By.cssSelector("a[href*='login'], a[href*='my-account']");
-    private By userProfileName = By.cssSelector(".header-block__title");
     private By firstProduct =
             By.cssSelector(
                     "article.product-miniature a"
@@ -679,34 +678,6 @@ public class HomePage {
 
     public void clickSignIn() {
         WaitUtils.waitForClickable(driver, signInButton).click();
-    }
-
-    public void clickUserProfile() {
-
-        WebDriverWait wait =
-                new WebDriverWait(
-                        driver,
-                        Duration.ofSeconds(20)
-                );
-
-        WebElement element =
-                wait.until(
-                        ExpectedConditions.elementToBeClickable(
-                                userProfileName
-                        )
-                );
-
-        try {
-
-            element.click();
-
-        } catch (Exception e) {
-
-            WaitUtils.jsClick(
-                    driver,
-                    element
-            );
-        }
     }
 
     public void switchLanguage(String language) {
@@ -1420,9 +1391,6 @@ public class HomePage {
 
         return titles;
     }
-
-
-
 
 
 }

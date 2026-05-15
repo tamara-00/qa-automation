@@ -26,6 +26,11 @@ public class WaitUtils {
         );
     }
 
+    public static WebElement waitForPresence(WebDriver driver, By locator) {
+        return new WebDriverWait(driver, Duration.ofSeconds(TIMEOUT))
+                .until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
     public static WebElement waitForClickable(
             WebDriver driver,
             By locator

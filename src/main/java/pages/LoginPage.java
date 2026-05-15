@@ -3,7 +3,11 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.WaitUtils;
+
+import java.time.Duration;
 
 public class LoginPage {
 
@@ -20,11 +24,10 @@ public class LoginPage {
 
     public void login(String userEmail, String userPassword) {
         WebElement emailField = WaitUtils.waitForVisible(driver, email);
-        WebElement passwordField = WaitUtils.waitForVisible(driver, password);
-
         emailField.clear();
         emailField.sendKeys(userEmail);
 
+        WebElement passwordField = driver.findElement(password);
         passwordField.clear();
         passwordField.sendKeys(userPassword);
 
@@ -32,6 +35,11 @@ public class LoginPage {
     }
 
     public boolean isErrorDisplayed() {
-        return driver.findElements(error).size() > 0;
+        try {
+            WaitUtils.waitForVisible(driver, error);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

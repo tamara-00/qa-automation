@@ -15,10 +15,8 @@ public class AccountPage {
 
     private WebDriver driver;
 
-    private By signOut = By.xpath("//a[contains(.,'Sign out')]");
     private By signOutButton = By.cssSelector("a[href*='mylogout']");
     private By userProfileName = By.cssSelector(".header-block__title");
-    private By identityLink = By.cssSelector("a[href*='identity']");
     private By firstNameField = By.id("field-firstname");
     private By lastNameField = By.id("field-lastname");
     private By emailField = By.id("field-email");
@@ -27,28 +25,32 @@ public class AccountPage {
     private By successAlert = By.cssSelector(".alert-success");
     private By psgdprCheckbox = By.id("field-psgdpr");
     private By customerPrivacyCheckbox = By.id("field-customer_privacy");
+    private By signOutXPath = By.xpath("//footer//a[contains(.,'Sign out')]");
+    private By profileMenuButton = By.id("userMenuButton");
+    private By informationLink = By.cssSelector("a[href*='identity']");
 
     public AccountPage(WebDriver driver) {
         this.driver = driver;
     }
 
     public boolean isLoggedIn() {
-        return driver.findElements(signOut).size() > 0
-                || driver.getPageSource().contains("Sign out");
+        try {
+            WebElement logoutBtn = WaitUtils.waitForPresence(driver, signOutXPath);
+            WaitUtils.scrollIntoView(driver, logoutBtn);
+            return logoutBtn.isDisplayed();
+        } catch (Exception e) {
+            System.out.println("Sign out button not found in footer: " + e.getMessage());
+            return false;
+        }
     }
 
     public void logout() {
         FrameUtils.switchToStoreFrame(driver);
-
         WaitUtils.scrollToBottom(driver);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        By signOutLocator = By.xpath("//a[contains(normalize-space(),'Sign out')]");
-
-        WebElement signOutButton = wait.until(ExpectedConditions.presenceOfElementLocated(signOutLocator));
+        WebElement signOutButton = WaitUtils.waitForPresence(driver, By.xpath("//a[contains(normalize-space(),'Sign out')]"));
 
         WaitUtils.scrollIntoView(driver, signOutButton);
-
         WaitUtils.jsClick(driver, signOutButton);
 
         driver.switchTo().defaultContent();
@@ -65,7 +67,12 @@ public class AccountPage {
     }
 
     public void openInformationSection() {
-        WaitUtils.waitForClickable(driver, identityLink).click();
+        WebElement menu = WaitUtils.waitForClickable(driver, profileMenuButton);
+        WaitUtils.robustClick(driver, menu);
+
+        WebElement info = WaitUtils.waitForPresence(driver, informationLink);
+
+        WaitUtils.jsClick(driver, info);
     }
 
     public void updatePersonalInfo(String fName, String lName, String email, String currentPassword) {
