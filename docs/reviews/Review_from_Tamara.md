@@ -583,12 +583,12 @@ But ensure this practice continues.
 
 ### Priority 3: MAJOR (Fix Within 4-8 Weeks)
 
-8**Complete Page Object Model Implementation**
+8. **Complete Page Object Model Implementation**
    - Eliminate direct WebDriver usage in tests
    - Create comprehensive page object methods
    - **Timeline:** 2-3 weeks
 
-9**Add Test Infrastructure Enhancements**
+9. **Add Test Infrastructure Enhancements**
     - Implement TestListener for screenshots
     - Add retry mechanism for flaky tests
     - **Timeline:** 2 weeks
