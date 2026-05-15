@@ -24,40 +24,29 @@ public class ManualProductDetails_TC32 extends BaseTest {
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
         home.switchToStoreFrame();
-        WebElement product = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("img[alt='Hummingbird printed t-shirt']")));
+        WebElement product = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.cssSelector("img[alt='Hummingbird printed t-shirt']")
+        ));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", product);
         js.executeScript("arguments[0].click();", product);
         driver.switchTo().defaultContent();
-        try {
-            Thread.sleep(4000);
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("framelive")));
         home.switchToStoreFrame();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#product_details_heading button")));
         productPage.openProductDetails();
 
-        String stockInfo = productPage.getStockQuantity();
-        assertTrue(stockInfo.contains("Items"), "Error: Stock info is not displayed in product details!");
-        String initialQty = productPage.getQuantityValue();
-        productPage.clickIncrement();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        String stockInfo = wait.until(d -> {
+            String text = productPage.getStockQuantity();
+            return (text != null && !text.isEmpty()) ? text : null;
+        });
+        assertTrue(stockInfo.contains("Items"), "Stock info missing");
 
-        String qtyAfterInc = productPage.getQuantityValue();
-        assertEquals("2", qtyAfterInc, "Error: Quantity did not increase to 2!");
-        productPage.clickDecrement();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        String qtyFinal = productPage.getQuantityValue();
-        assertEquals(initialQty, qtyFinal, "Error: Quantity did not decrease back to 1!");
-
-        System.out.println("TC.32 PASSED: Stock visibility and +/- buttons are working as expected.");
+        assertEquals("1", productPage.getProductPageQuantityValue());
+        productPage.clickIncrementOnProductPage();
+        wait.until(d -> productPage.getProductPageQuantityValue().equals("2"));
+        assertEquals("2", productPage.getProductPageQuantityValue());
+        productPage.clickDecrementOnProductPage();
+        wait.until(d -> productPage.getProductPageQuantityValue().equals("1"));
+        assertEquals("1", productPage.getProductPageQuantityValue());
     }
 }

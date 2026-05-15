@@ -16,6 +16,9 @@ public class ProductPage {
     private WebDriverWait wait;
 
     // existing locators
+    private By productPageIncrementBtn = By.id("increment_button_1");
+    private By productPageDecrementBtn = By.id("decrement_button_1");
+    private By productPageQuantityInputSimple = By.id("quantity_wanted");
     private By productName =
             By.cssSelector("h1.product__name");
 
@@ -68,6 +71,8 @@ public class ProductPage {
             By.cssSelector(
                     ".details__item--quantities .details__right span"
             );
+
+    private By productPageQuantityInput = By.cssSelector("#add-to-cart-or-refresh input[name='qty']");
 
     // shopping/cart locators
     private By addToCartButton =
@@ -556,6 +561,34 @@ public class ProductPage {
         return driver.findElements(
                 By.cssSelector(".product-miniature")
         ).size();
+    }
+
+    public String getProductPageQuantity() {
+        WebElement quantityField = WaitUtils.waitForVisible(driver, productPageQuantityInput);
+        return quantityField.getAttribute("value");
+    }
+
+    public void clickIncrementOnProductPage() {
+        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(productPageIncrementBtn));
+        WaitUtils.scrollIntoView(driver, btn);
+
+        try { Thread.sleep(500); } catch (InterruptedException e) {}
+
+        WaitUtils.jsClick(driver, btn);
+    }
+
+    public void clickDecrementOnProductPage() {
+        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(productPageDecrementBtn));
+        WaitUtils.scrollIntoView(driver, btn);
+
+        try { Thread.sleep(500); } catch (InterruptedException e) {}
+
+        WaitUtils.jsClick(driver, btn);
+    }
+
+    public String getProductPageQuantityValue() {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(productPageQuantityInputSimple));
+        return input.getAttribute("value");
     }
 
 }

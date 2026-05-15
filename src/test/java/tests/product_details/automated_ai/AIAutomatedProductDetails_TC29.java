@@ -51,7 +51,7 @@ public class AIAutomatedProductDetails_TC29 extends BaseTest {
         assertTrue(price.contains("22.94"), "ERROR: Product price does not match! Found: " + price);
 
         assertEquals("Color", productPage.getColorLabel(), "ERROR: 'Color' variant label was not found!");
-        assertEquals("1", productPage.getQuantityValue(), "ERROR: Initial quantity should be 1.");
+        assertEquals("1", productPage.getProductPageQuantity(), "ERROR: Initial quantity should be 1.");
         assertTrue(productPage.isSizeDropdownVisible(), "ERROR: Size selection dropdown is not visible.");
         assertTrue(productPage.isAddToCartIconVisible(), "ERROR: Add to Cart icon is not visible!");
 
