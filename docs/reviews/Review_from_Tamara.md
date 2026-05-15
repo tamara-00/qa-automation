@@ -70,20 +70,7 @@ boolean cartPageOpened = driver.getPageSource().contains("Shopping Cart");
 
 ### 1.3 Major Issues
 
-#### 1.3.1 Missing Input Validation Coverage
-**Tests Missing:** Negative scenarios for checkout
-- No tests for invalid credit card formats
-- No tests for mismatched delivery addresses
-- No tests for incomplete form submissions
-
-**Recommendation:** Add negative test cases:
-```
-TC24: Checkout with expired credit card
-TC25: Checkout with invalid postcode format
-TC26: Checkout with mismatched address fields
-```
-
-#### 1.3.2 No Wait Strategy for Dynamic Content
+#### 1.3.1 No Wait Strategy for Dynamic Content
 **Files Affected:** All checkout tests
 
 **Issue:** Tests use explicit `Thread.sleep()` is not visible in these tests, but page transitions are not properly waited for.
@@ -178,12 +165,7 @@ assertFalse(validProductLoaded, "Invalid product should NOT load valid product p
 
 ### 2.3 Major Issues
 
-#### 2.3.1 Missing Error Recovery Scenarios
-- No tests for form submission after validation errors
-- No tests for timeout scenarios
-- No tests for partial network failures
-
-#### 2.3.2 Generic Page Source Assertions
+#### 2.3.1 Generic Page Source Assertions
 **Pattern:** All failed tests use `driver.getPageSource()` for verification
 - Not maintainable
 - False positive/negative prone
@@ -287,11 +269,6 @@ FrameUtils.switchToStoreFrame(driver);
 homePage.switchLanguage(language);
 // Wait for language to load, then verify
 ```
-
-#### 3.4.2 No Coverage for Menu Navigation
-- Tests verify language translation but not menu clicking
-- No tests for submenu expansion/collapse
-- No breadcrumb navigation tests
 
 ### 3.5 Code Quality
 
@@ -406,34 +383,7 @@ productPage.clickIncrementQuantity(QUANTITY_INCREMENT);
 assertEquals(EXPECTED_TOTAL, cartCount);
 ```
 
-#### 5.2.2 Missing Verification of Cart State Consistency
-**Observation:** Tests verify cart badge count but not:
-- Individual item prices in cart
-- Subtotal calculations
-- Tax calculations (if applicable)
-- Total price verification
-
-**Recommendation:** Add comprehensive cart validation:
-```java
-CartItem item = cart.getItem(0);
-assertEquals(product.getPrice(), item.getPrice());
-assertEquals(expectedTotal, cart.calculateTotal());
-```
-
-### 5.3 Major Issues
-
-#### 5.3.1 Incomplete Shopping Flow Testing
-- No tests for quantity update in cart
-- No tests for item removal from cart
-- No tests for cart persistence across sessions
-- No tests for maximum quantity limits
-
-#### 5.3.2 No Tests for Edge Cases
-- Adding same product multiple times
-- Adding products with variants
-- Cart behavior when session expires
-
-### 5.4 Code Quality Issues
+### 5.3 Code Quality Issues
 
 | Issue | Severity | Impact |
 |-------|----------|--------|
@@ -614,15 +564,6 @@ But ensure this practice continues.
    Solution: Use WaitUtils consistently
    ```
 
-4. **Improve Error Handling Test Coverage**
-   - **Impact:** HIGH - Critical scenarios untested
-   - **Effort:** HIGH
-   - **Timeline:** 1-2 weeks
-   ```
-   Missing: 403, 500 errors, timeout scenarios
-   Solution: Add staging environment tests
-   ```
-
 ### Priority 2: MAJOR (Fix Within 2-4 Weeks)
 
 5. **Enhance Assertion Logic**
@@ -634,34 +575,23 @@ But ensure this practice continues.
    - Create TestDataFactory
    - Centralize test data generation
    - **Timeline:** 1 week
-
-7. **Add Negative Test Scenarios**
-   - Invalid credit cards, empty carts, etc.
-   - **Timeline:** 2 weeks
-
-8. **Establish Consistent Wait Strategy**
+   
+7. **Establish Consistent Wait Strategy**
    - Document wait best practices
    - Create WaitUtils extensions
    - **Timeline:** 1 week
 
 ### Priority 3: MAJOR (Fix Within 4-8 Weeks)
 
-9. **Complete Page Object Model Implementation**
+8**Complete Page Object Model Implementation**
    - Eliminate direct WebDriver usage in tests
    - Create comprehensive page object methods
    - **Timeline:** 2-3 weeks
 
-10. **Add Test Infrastructure Enhancements**
+9**Add Test Infrastructure Enhancements**
     - Implement TestListener for screenshots
     - Add retry mechanism for flaky tests
     - **Timeline:** 2 weeks
-
-11. **Expand Test Coverage**
-    - Add shopping flow combinations
-    - Add cart persistence tests
-    - Add accessibility tests
-    - **Timeline:** 3-4 weeks
-
 ---
 
 ## 9. RISK ASSESSMENT
