@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
+.idea/
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
@@ -12,6 +13,7 @@ target/
 *.iws
 *.iml
 *.ipr
+*.idea
 
 ### Eclipse ###
 .apt_generated
@@ -34,7 +36,63 @@ build/
 
 ### VS Code ###
 .vscode/
+*.code-workspace
 
 ### Mac OS ###
 .DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*.swo
+*~
+
+### Test Reports & Artifacts ###
+allure-results/
+allure-report/
+test-reports/
+extent-reports/
+screenshots/
+logs/
+screen-recordings/
+*.log
+output/
+
+### Environment & Configuration ###
+.env
+.env.local
+config.properties.local
+application-local.properties
+
+### Maven ###
+.mvn/
+mvnw
+mvnw.cmd
+
+### Temporary Files ###
+*.tmp
+*.bak
+*.orig
+.DS_Store
+.project
+.classpath
+
+### Dependencies ###
+dependency-reduced-pom.xml
+
+### IDE Temp Files ###
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+### OS Generated Files ###
+Thumbs.db
+.AppleDouble
+.LSOverride
+._*
 
