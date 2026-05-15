@@ -3,13 +3,10 @@ package tests.product_details.automated_ai;
 import base.BaseTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.HomePage;
 import pages.ProductPage;
-import java.time.Duration;
+import utils.WaitUtils;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AIAutomatedProductDetails_TC29 extends BaseTest {
@@ -19,42 +16,32 @@ public class AIAutomatedProductDetails_TC29 extends BaseTest {
     public void TC29_verifyFullProductInformation() {
         HomePage home = new HomePage(driver);
         ProductPage productPage = new ProductPage(driver);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
 
         home.switchToStoreFrame();
 
-        WebElement featuredTitle = wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.cssSelector("h2.section-title")
-        ));
-        js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", featuredTitle);
+        WebElement featuredTitle = WaitUtils.waitForPresence(driver, By.cssSelector("h2.section-title"));
+        WaitUtils.scrollIntoView(driver, featuredTitle);
 
-        try { Thread.sleep(1500); } catch (InterruptedException e) {}
-
-        WebElement productImg = wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("img[alt='Hummingbird printed t-shirt']")
-        ));
-        js.executeScript("arguments[0].click();", productImg);
+        WebElement productImg = WaitUtils.waitForClickable(driver, By.cssSelector("img[alt='Hummingbird printed t-shirt']"));
+        WaitUtils.robustClick(driver, productImg);
 
         driver.switchTo().defaultContent();
-        try { Thread.sleep(4000); } catch (InterruptedException e) {}
+        WaitUtils.waitForPresence(driver, By.id("framelive"));
         home.switchToStoreFrame();
 
-        assertEquals("Hummingbird printed t-shirt", productPage.getProductName(), "ERROR: Product name does not match!");
-
-        assertTrue(productPage.isMainImageDisplayed(), "ERROR: Product main image is not displayed!");
+        assertEquals("Hummingbird printed t-shirt", productPage.getProductName(), "Product name mismatch");
+        assertTrue(productPage.isMainImageDisplayed(), "Main image missing");
 
         String description = productPage.getDescriptionText();
-        assertTrue(description.contains("pima cotton"), "ERROR: Description does not contain the expected text. Found: " + description);
+        assertTrue(description.contains("pima cotton"), "Description text mismatch");
 
         String price = productPage.getPriceText();
-        assertTrue(price.contains("22.94"), "ERROR: Product price does not match! Found: " + price);
+        assertTrue(price.contains("22.94"), "Price mismatch");
 
-        assertEquals("Color", productPage.getColorLabel(), "ERROR: 'Color' variant label was not found!");
-        assertEquals("1", productPage.getProductPageQuantity(), "ERROR: Initial quantity should be 1.");
-        assertTrue(productPage.isSizeDropdownVisible(), "ERROR: Size selection dropdown is not visible.");
-        assertTrue(productPage.isAddToCartIconVisible(), "ERROR: Add to Cart icon is not visible!");
+        assertEquals("Color", productPage.getColorLabel(), "Variant label missing");
+        assertEquals("1", productPage.getProductPageQuantityValue(), "Initial quantity should be 1");
 
-        System.out.println("TC.29 SUCCESS: All product information is correctly displayed.");
+        assertTrue(productPage.isSizeDropdownVisible(), "Size dropdown missing");
+        assertTrue(productPage.isAddToCartIconVisible(), "Add to Cart button missing");
     }
 }

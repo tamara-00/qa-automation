@@ -3,13 +3,10 @@ package tests.user_account.automated_ai;
 import base.BaseTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.AccountPage;
 import pages.HomePage;
 import pages.LoginPage;
-
-import java.time.Duration;
+import utils.WaitUtils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,13 +30,10 @@ public class AIAutomatedUserAccount_TC27 extends BaseTest {
 
         home.switchToStoreFrame();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WaitUtils.waitForText(driver, By.className("header-block__title"), "Sign in");
 
-        boolean isSignInVisible = wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                By.className("header-block__title"), "Sign in"
-        ));
-
-        assertTrue(isSignInVisible, "TC.27 FAILED: User is still logged in after logout");
+        boolean isSignInVisible = driver.findElement(By.className("header-block__title")).getText().contains("Sign in");
+        assertTrue(isSignInVisible, "User is still logged in after logout");
     }
 
     @Test
@@ -53,18 +47,17 @@ public class AIAutomatedUserAccount_TC27 extends BaseTest {
         login.login(EMAIL, PASSWORD);
 
         driver.switchTo().defaultContent();
-        try { Thread.sleep(4000); } catch (InterruptedException e) {}
+        WaitUtils.waitForPresence(driver, By.id("framelive"));
         home.switchToStoreFrame();
 
         account.logoutViaDropdown();
 
         driver.switchTo().defaultContent();
-        try { Thread.sleep(2000); } catch (InterruptedException e) {}
+        WaitUtils.waitForPresence(driver, By.id("framelive"));
         home.switchToStoreFrame();
 
-        boolean isLoggedOut = driver.getPageSource().contains("Sign in");
+        boolean isLoggedOut = WaitUtils.waitForVisible(driver, By.className("header-block__title")).getText().contains("Sign in");
 
-        assertTrue(isLoggedOut, "TC.27 FAILED: User is still logged in after logout via dropdown");
-        System.out.println("TC.27 PASSED: Logout successful via dropdown link.");
+        assertTrue(isLoggedOut, "User is still logged in after logout via dropdown");
     }
 }
