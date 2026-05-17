@@ -1,4 +1,4 @@
-# Critical Review: Checkout, Error Handling, Shopping & User Account Tests
+# Review: Checkout, Error Handling, Shopping & User Account Tests
 
 **Scope:** TC13-TC28 (Excluding Navigation and Search Filter)  
 
