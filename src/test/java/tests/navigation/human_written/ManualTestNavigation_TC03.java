@@ -1,4 +1,4 @@
-package tests.navigation.manual;
+package tests.navigation.human_written;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Test;

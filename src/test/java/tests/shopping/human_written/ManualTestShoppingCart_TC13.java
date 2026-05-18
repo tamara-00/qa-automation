@@ -1,4 +1,4 @@
-package tests.shopping.manual;
+package tests.shopping.human_written;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Test;

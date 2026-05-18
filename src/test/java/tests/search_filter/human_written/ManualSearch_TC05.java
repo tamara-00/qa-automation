@@ -1,4 +1,4 @@
-package tests.search_filter.manual;
+package tests.search_filter.human_written;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Test;

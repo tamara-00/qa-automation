@@ -1,4 +1,4 @@
-package tests.error_handling.manual;
+package tests.error_handling.human_written;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Test;

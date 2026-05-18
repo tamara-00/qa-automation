@@ -1,4 +1,4 @@
-package tests.checkout.manual;
+package tests.checkout.human_written;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Test;
