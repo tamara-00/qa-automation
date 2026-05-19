@@ -6,6 +6,8 @@
 
 ## G+D Netcetera x FINKI Collaboration
 
+### Full Project Presentation: https://newqaprezv1.vercel.app
+
 This project was developed as part of a collaboration between **G+D Netcetera** and the **Faculty of Computer Science & Engineering (FINKI)**, focused on applying Artificial Intelligence in Quality Assurance and automation testing workflows.
 
 The goal of the collaboration is to explore the practical usage of AI tools in software testing processes, specifically in:
