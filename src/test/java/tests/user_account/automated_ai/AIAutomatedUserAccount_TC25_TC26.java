@@ -8,7 +8,7 @@ import pages.LoginPage;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TC25_TC26_LoginTest extends BaseTest {
+public class AIAutomatedUserAccount_TC25_TC26 extends BaseTest {
 
     private static final String EMAIL = "pub@prestashop.com";
     private static final String PASSWORD = "123456789";
@@ -26,8 +26,9 @@ public class TC25_TC26_LoginTest extends BaseTest {
 
         login.login(EMAIL, PASSWORD);
 
-        assertTrue(account.isLoggedIn(),
-                "TC.25 FAILED: User was not logged in with valid credentials");
+        home.switchToStoreFrame();
+
+        assertTrue(account.isLoggedIn(), "TC25: User should be logged in but is not.");
     }
 
     // TC.26 - User Login with Invalid Credentials
